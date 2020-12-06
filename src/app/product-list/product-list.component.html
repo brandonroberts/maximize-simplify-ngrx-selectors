@@ -1,29 +1,32 @@
 <h2>Products</h2>
 
-<div *ngFor="let product of products; index as productId">
+<ng-container *ngIf="vm$ | async as vm">
+  <ng-container *ngIf="vm.ready;else loading">
+    <div *ngFor="let product of vm.products">
 
-  <h3>
-    <a [title]="product.name + ' details'" [routerLink]="['/products', productId]">
-      {{ product.name }}
-    </a>
-  </h3>
-  <p *ngIf="product.description">
-    Description: {{ product.description }}
-  </p>
-  
-  <button (click)="share()">
-    Share
-  </button>
-  
-  <app-product-alerts
-    [product]="product"
-    (notify)="onNotify()">
-  </app-product-alerts>
-</div>
+      <h3>
+        <a [title]="product.title" [routerLink]="['/products', product.id]">
+          {{ product.name }}
+        </a>
+      </h3>
+      <p *ngIf="product.description">
+        Description: {{ product.description }}
+      </p>
 
+      <p *ngIf="product.category">
+        Category: {{ product.category }}
+      </p>      
 
-<!-- 
-Copyright Google LLC. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at https://angular.io/license
--->
+      <button (click)="share()">
+        Share
+      </button>
+
+      <app-product-alerts [product]="product" (notify)="onNotify()">
+      </app-product-alerts>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #loading>
+  Loading ...
+</ng-template>

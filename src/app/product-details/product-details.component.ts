@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
-import { products } from '../products';
+import * as ProductDetailsActions from './product-details.actions';
+import { ProductsSelectors } from '../shared/state/products';
 import { CartService } from '../cart.service';
 
 @Component({
@@ -10,17 +13,18 @@ import { CartService } from '../cart.service';
   styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent implements OnInit {
-  product;
+  product$ = this.store.select(ProductsSelectors.selectCurrentProduct);
 
   constructor(
     private route: ActivatedRoute,
-    private cartService: CartService
+    private cartService: CartService,
+    private store: Store
   ) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.product = products[+params.get('productId')];
-    });
+    this.route.paramMap.pipe(
+      map(params => ProductDetailsActions.enter({ productId: +params.get('productId') }))
+    ).subscribe(this.store);
   }
 
   addToCart(product) {
