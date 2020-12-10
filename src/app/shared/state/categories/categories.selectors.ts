@@ -10,11 +10,6 @@ export const selectAllCategories = createSelector(
   fromCategories.selectAll
 );
 
-export const selectAllCategoriesEntities = createSelector(
-  selectCategoriesState,
-  fromCategories.selectEntities
-);
-
 export const selectCategoriesLoaded = createSelector(
   selectCategoriesState,
   fromCategories.selectCategoriesLoaded

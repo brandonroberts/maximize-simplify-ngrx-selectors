@@ -1,29 +1,37 @@
-import { Category } from '../../models';
-import { createEntityAdapter, EntityState } from '@ngrx/entity';
-import { Action, createReducer, on } from '@ngrx/store';
+import { createReducer, createSelector, on } from '@ngrx/store';
 
-import * as CategoryActions from './categories.actions';
+import { Category } from '../../models';
+
+import * as CategoriesActions from './categories.actions';
 
 export const categoriesFeatureKey = 'categories';
 
-export interface State extends EntityState<Category> {
+export interface State {
+  collection: Category[];
   currentCategoryId: number;
   loaded: boolean;
 }
 
-export const adapter = createEntityAdapter<Category>();
-
-export const initialState = adapter.getInitialState({
+export const initialState: State = {
+  collection: [],
   currentCategoryId: null,
   loaded: false
-});
+};
 
 export const reducer = createReducer(
   initialState,
-  on(CategoryActions.loadCategoriesSuccess, (state, action) => 
-    adapter.setAll(action.categories, { ...state, loaded: true })
-  )
+  on(CategoriesActions.loadCategoriesSuccess, (state, action) => ({
+    ...state,
+    collection: action.categories,
+    loaded: true
+  }))
 );
 
-export const { selectAll, selectEntities } = adapter.getSelectors();
+export const selectAll = (state: State) => state.collection;
 export const selectCategoriesLoaded = (state: State) => state.loaded;
+export const selectCurrentCategoryId = (state: State) => state.currentCategoryId;
+export const selectCurrentCategory = createSelector(
+  selectAll,
+  selectCurrentCategoryId,
+  (categories, currentCategoryId) => currentCategoryId ? categories.find(category => category.id === currentCategoryId) : null
+);

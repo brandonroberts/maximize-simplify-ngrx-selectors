@@ -11,11 +11,6 @@ export const selectAllProducts = createSelector(
   fromProducts.selectAll
 );
 
-export const selectAllProductsEntities = createSelector(
-  selectProductsState,
-  fromProducts.selectEntities
-);
-
 export const selectCurrentProduct = createSelector(
   selectProductsState,
   fromProducts.selectCurrentProduct

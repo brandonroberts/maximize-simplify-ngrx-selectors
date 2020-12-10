@@ -3,28 +3,28 @@ import { createSelector } from '@ngrx/store';
 import { CategoriesSelectors } from '../shared/state/categories';
 import { ProductsSelectors } from '../shared/state/products';
 
-export const ready = createSelector(
+export const selectIsViewReady = createSelector(
   ProductsSelectors.selectProductsLoaded,
   CategoriesSelectors.selectCategoriesLoaded,
   (productsLoaded, categoriesLoaded) => [productsLoaded, categoriesLoaded].every(loaded => loaded === true)
 );
 
-export const products = createSelector(
+export const selectProductsList = createSelector(
   ProductsSelectors.selectAllProducts,
-  CategoriesSelectors.selectAllCategoriesEntities,
+  CategoriesSelectors.selectAllCategories,
   (products, categoriesEntities) => {
     return products.map(product => {
       return {
         ...product,
         title: `${product.name} details`,
-        category: categoriesEntities[product.categoryId] ? categoriesEntities[product.categoryId].name : ''
+        category: categoriesEntities.find(category => category.id === product.categoryId)?.name ||  ''
       };
     })
   }  
 );
 
-export const productListViewModel = createSelector(
-  ready,
-  products,
+export const selectProductListViewModel = createSelector(
+  selectIsViewReady,
+  selectProductsList,
   (ready, products) => ({ ready, products })
 );

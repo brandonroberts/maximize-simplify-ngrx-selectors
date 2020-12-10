@@ -10,7 +10,7 @@ import * as ProductsListActions from './product-list.actions';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent {
-  vm$ = this.store.select(ProductListSelectors.productListViewModel);
+  vm$ = this.store.select(ProductListSelectors.selectProductListViewModel);
 
   constructor(private store: Store) {}
 

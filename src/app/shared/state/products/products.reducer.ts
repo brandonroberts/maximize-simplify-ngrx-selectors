@@ -1,4 +1,3 @@
-import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, createSelector, on } from '@ngrx/store';
 
 import { Product } from '../../models';
@@ -8,34 +7,36 @@ import * as ProductsActions from './products.actions';
 
 export const productsFeatureKey = 'products';
 
-export interface State extends EntityState<Product> {
+export interface State {
+  collection: Product[];
   currentProductId: number;
   loaded: boolean;
 }
 
-export const adapter = createEntityAdapter<Product>();
-
-export const initialState = adapter.getInitialState({
+export const initialState: State = {
+  collection: [],
   currentProductId: null,
   loaded: false
-});
+};
 
 export const reducer = createReducer(
   initialState,
-  on(ProductsActions.loadProductsSuccess, (state, action) => 
-    adapter.setAll(action.products, { ...state, loaded: true })
-  ),
+  on(ProductsActions.loadProductsSuccess, (state, action) => ({
+    ...state,
+    collection: action.products,
+    loaded: true
+  })),
   on(ProductDetailsActions.enter, (state, action) => ({
     ...state,
     currentProductId: action.productId
   }))
 );
 
-export const { selectAll, selectEntities } = adapter.getSelectors();
+export const selectAll = (state: State) => state.collection;
 export const selectProductsLoaded = (state: State) => state.loaded;
 export const selectCurrentProductId = (state: State) => state.currentProductId;
 export const selectCurrentProduct = createSelector(
-  selectEntities,
+  selectAll,
   selectCurrentProductId,
-  (entities, currentProductId) => currentProductId ? entities[currentProductId] : null
+  (products, currentProductId) => currentProductId ? products.find(product => product.id === currentProductId) : null
 );
