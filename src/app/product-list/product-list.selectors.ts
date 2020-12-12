@@ -11,13 +11,13 @@ export const selectIsViewReady = createSelector(
 
 export const selectProductsList = createSelector(
   ProductsSelectors.selectAllProducts,
-  CategoriesSelectors.selectAllCategories,
-  (products, categoriesEntities) => {
+  CategoriesSelectors.selectCategoriesDictionary,
+  (products, categoriesDictionary) => {
     return products.map(product => {
       return {
         ...product,
         title: `${product.name} details`,
-        category: categoriesEntities.find(category => category.id === product.categoryId)?.name ||  ''
+        category: categoriesDictionary[product.categoryId] ? categoriesDictionary[product.categoryId].name : ''
       };
     })
   }  

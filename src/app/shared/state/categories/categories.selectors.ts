@@ -14,3 +14,15 @@ export const selectCategoriesLoaded = createSelector(
   selectCategoriesState,
   fromCategories.selectCategoriesLoaded
 );
+
+export const selectCategoriesDictionary = createSelector(
+  selectAllCategories,
+  categories => {
+    return categories
+      .reduce((categoriesDictionary, category) => {
+        return {
+          ...categoriesDictionary,
+          [category.id]: category
+        };
+      }, {});
+  });
