@@ -1,4 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { Category } from '../../models';
 import * as fromCategories from './categories.reducer';
 
 export const selectCategoriesState = createFeatureSelector<fromCategories.State>(
@@ -18,11 +19,11 @@ export const selectCategoriesLoaded = createSelector(
 export const selectCategoriesDictionary = createSelector(
   selectAllCategories,
   categories => {
-    return categories
-      .reduce((categoriesDictionary, category) => {
-        return {
-          ...categoriesDictionary,
-          [category.id]: category
-        };
-      }, {});
-  });
+    let categoriesDictionary: { [id: number]: Category } = {};
+    
+    categories.forEach(category => {
+      categoriesDictionary[category.id] = category;
+    });
+
+  return categoriesDictionary;
+});
